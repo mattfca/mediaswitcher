@@ -93,7 +93,7 @@ func runX16R() {
 			if gpu && !gpuPrev {
 				color.Red("GPU Mining Detected")
 
-				if EquihashCMD.Process != nil {
+				if EquihashCMD != nil {
 					color.Blue("Stopping Equihash")
 					if err := EquihashCMD.Process.Kill(); err != nil {
 						color.Red("Failed to stop dstm")
