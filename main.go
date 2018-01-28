@@ -111,7 +111,7 @@ func runX16R() {
 func runEquihash() {
 	color.Blue("Starting Equihash")
 
-	equihashArgs := fmt.Sprintf("--dev %s --server %s --port %s --user %s.%s --pass %s --d %s", conf.Devices, conf.EquihashServer, conf.EquihashPort, conf.EquihashUser, conf.EquihashWorker, conf.EquihashPassword)
+	equihashArgs := fmt.Sprintf("--dev %s --server %s --port %s --user %s.%s --pass %s", conf.Devices, conf.EquihashServer, conf.EquihashPort, conf.EquihashUser, conf.EquihashWorker, conf.EquihashPassword)
 	EquihashCMD = exec.Command("miners/zm_0.5.7_win/zm.exe", strings.Split(equihashArgs, " ")...)
 	color.Blue("miners/zm_0.5.7_win/zm.exe %s", equihashArgs)
 	/*
