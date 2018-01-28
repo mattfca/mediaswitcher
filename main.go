@@ -7,8 +7,6 @@ import (
 	"log"
 	"os/exec"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 // Config is just the stuff we need to run child miners
@@ -50,7 +48,7 @@ func main() {
 
 func runX16R() {
 	args := fmt.Sprintf("-a x16r -o stratum+tcp://rvn.suprnova.cc:6667 -u %s.%s -p %s -d %s  --num-fallback-threads=%s", conf.X16RUser, conf.X16RWorker, conf.X16RPassword, conf.Devices, conf.FallbackThreads)
-	color.Blue("Running: miners/ccminer-x64.exe %s", args)
+	fmt.Println("Running: miners/ccminer-x64.exe %s", args)
 
 	CMD = exec.Command("miners/ccminer-x64.exe", strings.Split(args, " ")...)
 
@@ -73,7 +71,7 @@ func runX16R() {
 			cpuPrev := cpu
 			gpuPrev := gpu
 
-			color.Magenta(ln)
+			fmt.Println(ln)
 
 			if strings.Contains(ln, "Partial GPU job") {
 				cpu = true
@@ -86,17 +84,17 @@ func runX16R() {
 			}
 
 			if cpu && !cpuPrev {
-				color.Red("CPU Mining Detected")
+				fmt.Println("CPU Mining Detected")
 				go runEquihash()
 			}
 
 			if gpu && !gpuPrev {
-				color.Red("GPU Mining Detected")
+				fmt.Println("GPU Mining Detected")
 
 				if EquihashCMD != nil {
-					color.Blue("Stopping Equihash")
+					fmt.Println("Stopping Equihash")
 					if err := EquihashCMD.Process.Kill(); err != nil {
-						color.Red("Failed to stop dstm")
+						fmt.Println("Failed to stop dstm")
 					}
 				}
 
@@ -109,11 +107,13 @@ func runX16R() {
 }
 
 func runEquihash() {
-	color.Blue("Starting Equihash")
+	fmt.Println("Starting Equihash")
 
-	equihashArgs := fmt.Sprintf("--dev %s --server %s --port %s --user %s.%s --pass %s", conf.Devices, conf.EquihashServer, conf.EquihashPort, conf.EquihashUser, conf.EquihashWorker, conf.EquihashPassword)
+	devices := strings.Replace(conf.Devices, ",", " ", -1)
+
+	equihashArgs := fmt.Sprintf("--d %s --server %s --port %s --user %s.%s --pass %s", devices, conf.EquihashServer, conf.EquihashPort, conf.EquihashUser, conf.EquihashWorker, conf.EquihashPassword)
 	EquihashCMD = exec.Command("miners/zm_0.5.7_win/zm.exe", strings.Split(equihashArgs, " ")...)
-	color.Blue("miners/zm_0.5.7_win/zm.exe %s", equihashArgs)
+	fmt.Println("miners/zm_0.5.7_win/zm.exe %s", equihashArgs)
 	/*
 	* Equihash
 	 */
@@ -128,7 +128,7 @@ func runEquihash() {
 	go func() {
 		for scannerEquihash.Scan() {
 			ln := scannerEquihash.Text()
-			color.Green(ln)
+			fmt.Println(ln)
 		}
 	}()
 
